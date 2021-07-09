@@ -2,7 +2,7 @@ import uuidv1 from 'uuid/v1'
 import { formatDate } from './utils'
 
 const defaults = {
-  title: 'Untitled event',
+  summary: 'Untitled',
   productId: 'adamgibbons/ics',
   method: 'PUBLISH',
   uid: uuidv1(),

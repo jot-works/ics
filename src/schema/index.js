@@ -7,16 +7,16 @@ import * as yup from 'yup'
 const urlRegex = /^(?:([a-z0-9+.-]+):\/\/)(?:\S+(?::\S*)?@)?(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/
 
 const dateTimeSchema = yup.array().min(3).max(7).of(yup.lazy((item, options) => {
-    const itemIndex = parseInt(options.path.match(/.*\[(\d+)]/)[1])
-    return [
-      yup.number().integer(),
-      yup.number().integer().min(1).max(12),
-      yup.number().integer().min(1).max(31),
-      yup.number().integer().min(0).max(23),
-      yup.number().integer().min(0).max(60),
-      yup.number().integer().min(0).max(60)
-    ][itemIndex]
-  })
+  const itemIndex = parseInt(options.path.match(/.*\[(\d+)]/)[1])
+  return [
+    yup.number().integer(),
+    yup.number().integer().min(1).max(12),
+    yup.number().integer().min(1).max(31),
+    yup.number().integer().min(0).max(23),
+    yup.number().integer().min(0).max(60),
+    yup.number().integer().min(0).max(60)
+  ][itemIndex]
+})
 )
 
 const durationSchema = yup.object().shape({
@@ -56,10 +56,9 @@ const alarmSchema = yup.object().shape({
   'iana-prop': yup.mixed()
 }).noUnknown()
 
-const schema = yup.object().shape({
-  summary: yup.string(),
+const eventSchema = yup.object().shape({
   timestamp: yup.mixed(),
-  title: yup.string(),
+  summary: yup.string(),
   productId: yup.string(),
   method: yup.string(),
   uid: yup.string().required(),
@@ -74,7 +73,7 @@ const schema = yup.object().shape({
   endOutputType: yup.string().matches(/utc|local/),
   description: yup.string(),
   url: yup.string().matches(urlRegex),
-  geo: yup.object().shape({lat: yup.number(), lon: yup.number()}),
+  geo: yup.object().shape({ lat: yup.number(), lon: yup.number() }),
   location: yup.string(),
   status: yup.string().matches(/TENTATIVE|CANCELLED|CONFIRMED/i),
   categories: yup.array().of(yup.string()),
@@ -92,12 +91,57 @@ const schema = yup.object().shape({
   return ((hasEnd && !hasDuration) || (!hasEnd && hasDuration) || (!hasEnd && !hasDuration))
 }).noUnknown()
 
-export default function validateEvent (candidate) {
-
+export function validateEvent(candidate) {
   try {
-    const value = schema.validateSync(candidate, {abortEarly: false, strict: true})
-    return {error: null, value}
+    const value = eventSchema.validateSync(candidate, { abortEarly: false, strict: true })
+    return { error: null, value }
   } catch (error) {
-    return {error, value: undefined}
+    return { error, value: undefined }
+  }
+}
+
+const todoSchema = yup.object().shape({
+  timestamp: yup.mixed(),
+  summary: yup.string(),
+  productId: yup.string(),
+  method: yup.string(),
+  uid: yup.string().required(),
+  sequence: yup.number(),
+  start: dateTimeSchema.required(),
+  duration: durationSchema,
+  startType: yup.string().matches(/utc|local/),
+  startInputType: yup.string().matches(/utc|local/),
+  startOutputType: yup.string().matches(/utc|local/),
+  due: dateTimeSchema,
+  dueInputType: yup.string().matches(/utc|local/),
+  dueOutputType: yup.string().matches(/utc|local/),
+  description: yup.string(),
+  url: yup.string().matches(urlRegex),
+  geo: yup.object().shape({ lat: yup.number(), lon: yup.number() }),
+  location: yup.string(),
+  status: yup.string().matches(/NEEDS-ACTION|COMPLETED|IN-PROGRESS|CANCELED/i),
+  categories: yup.array().of(yup.string()),
+  organizer: organizerSchema,
+  attendees: yup.array().of(contactSchema),
+  alarms: yup.array().of(alarmSchema),
+  recurrenceRule: yup.string(),
+  created: dateTimeSchema,
+  completed: dateTimeSchema,
+  percent: yup.number().integer().min(0).max(100),
+  priority: yup.number().integer().min(0).max(9),
+  lastModified: dateTimeSchema,
+  calName: yup.string()
+}).test('xor', `object should have due or duration`, val => {
+  const hasDue = !!val.due
+  const hasDuration = !!val.duration
+  return ((hasDue && !hasDuration) || (!hasDue && hasDuration) || (!hasDue && !hasDuration))
+}).noUnknown()
+
+export function validateTodo(candidate) {
+  try {
+    const value = todoSchema.validateSync(candidate, { abortEarly: false, strict: true })
+    return { error: null, value }
+  } catch (error) {
+    return { error, value: undefined }
   }
 }

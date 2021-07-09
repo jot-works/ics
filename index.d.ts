@@ -19,6 +19,8 @@ export type GeoCoordinates = {
 
 export type EventStatus = 'TENTATIVE' | 'CONFIRMED' | 'CANCELLED';
 
+export type TodoStatus = 'NEEDS-ACTION' | 'COMPLETED' | 'IN-PROGRESS' | 'CANCELED';
+
 export type ParticipationStatus =
   | 'NEEDS-ACTION'
   | 'ACCEPTED'
@@ -64,7 +66,7 @@ export type EventAttributes = {
   endInputType?: 'local' | 'utc';
   endOutputType?: 'local' | 'utc';
 
-  title?: string;
+  summary?: string;
   description?: string;
 
   location?: string;
@@ -90,6 +92,43 @@ export type EventAttributes = {
   lastModified?: DateArray;
 } & ({ end: DateArray } | { duration: DurationObject });
 
+export type TodoAttributes = {
+  start: DateArray;
+  startInputType?: 'local' | 'utc';
+  startOutputType?: 'local' | 'utc';
+
+  dueInputType?: 'local' | 'utc';
+  dueOutputType?: 'local' | 'utc';
+
+  summary?: string;
+  description?: string;
+
+  priority?: number;
+  percent?: number;
+
+  location?: string;
+  geo?: GeoCoordinates;
+
+  url?: string;
+  status?: TodoStatus;
+
+  organizer?: Person;
+  attendees?: Attendee[];
+
+  categories?: string[];
+  alarms?: Alarm[];
+
+  productId?: string;
+  uid?: string;
+  method?: string;
+  recurrenceRule?: string;
+  sequence?: number;
+  calName?: string;
+  created?: DateArray;
+  lastModified?: DateArray;
+} & ({ due: DateArray } | { duration: DurationObject });
+
+
 export type ReturnObject = { error?: Error; value?: string };
 
 type NodeCallback = (error: Error | undefined, value: string) => void;
@@ -98,6 +137,6 @@ export function createEvent(attributes: EventAttributes, callback: NodeCallback)
 
 export function createEvent(attributes: EventAttributes): ReturnObject;
 
-export function createEvents(events: EventAttributes[], callback: NodeCallback): void;
+export function createTodo(attributes: TodoAttributes, callback: NodeCallback): void;
 
-export function createEvents(events: EventAttributes[]): ReturnObject;
+export function createTodo(attributes: TodoAttributes): ReturnObject;

@@ -1,59 +1,25 @@
-import uuid from 'uuid/v4'
 import {
-  buildEvent,
+  buildItem,
+  formatEvent,
+  formatTodo,
   validateEvent,
-  formatEvent
+  validateTodo
 } from './pipeline'
 
-function assignUniqueId(event) {
-  event.uid = event.uid || uuid()
-  return event
+import uuid from 'uuid/v4'
+
+function assignUniqueId(item) {
+  item.uid = item.uid || uuid()
+  return item
 }
 function validateAndBuildEvent(event) {
-  return validateEvent(buildEvent(event))
+  return validateEvent(buildItem(event))
+}
+function validateAndBuildTodo(todo) {
+  return validateTodo(buildItem(todo))
 }
 
-function applyInitialFormatting({ error, value }) {
-  if (error) {
-    return { error, value: null }
-  }
-
-  return { error: null, value: formatEvent(value) }
-}
-
-function reformatEventsByPosition({ error, value }, idx, list) {
-  if (error) return { error, value }
-
-  if (idx === 0) {
-    // beginning of list
-    return { value: value.slice(0, value.indexOf('END:VCALENDAR')), error: null }
-  }
-
-  if (idx === list.length - 1) {
-    // end of list
-    return { value: value.slice(value.indexOf('BEGIN:VEVENT')), error: null}
-  }
-
-  return { error: null, value: value.slice(value.indexOf('BEGIN:VEVENT'), value.indexOf('END:VEVENT') + 12) }
-}
-
-function catenateEvents(accumulator, { error, value }, idx) {
-  if (error) {
-    accumulator.error = error
-    accumulator.value = null
-    return accumulator
-  }
-
-  if (accumulator.value) {
-    accumulator.value = accumulator.value.concat(value)
-    return accumulator
-  }
-
-  accumulator.value = value
-  return accumulator
-}
-
-export function createEvent (attributes, cb) {
+export function createEvent(attributes, cb) {
   if (!attributes) { Error('Attributes argument is required') }
 
   assignUniqueId(attributes)
@@ -68,7 +34,7 @@ export function createEvent (attributes, cb) {
 
     try {
       event = formatEvent(value)
-    } catch(error) {
+    } catch (error) {
       return { error, value: null }
     }
 
@@ -82,25 +48,32 @@ export function createEvent (attributes, cb) {
 
   return cb(null, formatEvent(value))
 }
+export function createTodo(attributes, cb) {
+  if (!attributes) { Error('Attributes argument is required') }
 
-export function createEvents (events, cb) {
-  if (!events) {
-    return { error: Error('one argument is required'), value: null }
-  }
-
-  if (events.length === 1) {
-    return createEvent(events[0], cb)
-  }
-
-  const { error, value } = events.map(assignUniqueId)
-    .map(validateAndBuildEvent)
-    .map(applyInitialFormatting)
-    .map(reformatEventsByPosition)
-    .reduce(catenateEvents, { error: null, value: null })
+  assignUniqueId(attributes)
 
   if (!cb) {
-    return { error, value }
+    // No callback, so return error or value in an object
+    const { error, value } = validateAndBuildTodo(attributes)
+
+    if (error) return { error, value }
+
+    let todo = ''
+
+    try {
+      todo = formatTodo(value)
+    } catch (error) {
+      return { error, value: null }
+    }
+
+    return { error: null, value: todo }
   }
 
-  return cb(error, value)
+  // Return a node-style callback
+  const { error, value } = validateAndBuildTodo(attributes)
+
+  if (error) return cb(error)
+
+  return cb(null, formatTodo(value))
 }

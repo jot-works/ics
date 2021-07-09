@@ -1,3 +1,3 @@
-import validate from '../schema'
+import { validateEvent, validateTodo } from '../schema'
 
-export default validate
+export { validateEvent, validateTodo }

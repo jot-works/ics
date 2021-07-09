@@ -1,15 +1,7 @@
 ics
 ==================
 
-The [iCalendar](http://tools.ietf.org/html/rfc5545) generator
-
-[![npm version](https://badge.fury.io/js/ics.svg)](http://badge.fury.io/js/ics)
-[![TravisCI build status](https://travis-ci.org/adamgibbons/ics.svg?branch=master)](https://travis-ci.org/adamgibbons/ics.svg?branch=master)
-[![Downloads](https://img.shields.io/npm/dm/ics.svg)](http://npm-stat.com/charts.html?package=ics)
-
-## Install
-
-`npm install -S ics`
+A fork of the [iCalendar](http://tools.ietf.org/html/rfc5545) generator with VTODO support
 
 ## Example Usage
 
@@ -21,7 +13,7 @@ const ics = require('ics')
 const event = {
   start: [2018, 5, 30, 6, 30],
   duration: { hours: 6, minutes: 30 },
-  title: 'Bolder Boulder',
+  summary: 'Bolder Boulder',
   description: 'Annual 10-kilometer run in Boulder, Colorado',
   location: 'Folsom Field, University of Colorado (finish line)',
   url: 'http://www.bolderboulder.com/',
@@ -77,7 +69,7 @@ const { writeFileSync } = require('fs')
 const ics = require('ics')
 
 ics.createEvent({
-  title: 'Dinner',
+  summary: 'Dinner',
   description: 'Nightly thing I do',
   busyStatus: 'FREE',
   start: [2018, 1, 15, 6, 30],
@@ -91,51 +83,7 @@ ics.createEvent({
 })
 ```
 
-3) Create multiple iCalendar events:
-```javascript
-const ics = require('./dist')
-
-const { error, value } = ics.createEvents([
-  {
-    title: 'Lunch',
-    start: [2018, 1, 15, 12, 15],
-    duration: { minutes: 45 }
-  },
-  {
-    title: 'Dinner',
-    start: [2018, 1, 15, 12, 15],
-    duration: { hours: 1, minutes: 30 }
-  }
-])
-
-if (error) {
-  console.log(error)
-  return
-}
-
-console.log(value)
-// BEGIN:VCALENDAR
-// VERSION:2.0
-// CALSCALE:GREGORIAN
-// PRODID:adamgibbons/ics
-// BEGIN:VEVENT
-// UID:3c6d44e8-79a7-428d-acac-9586c9e06e5c
-// SUMMARY:Lunch
-// DTSTAMP:20180210T093900Z
-// DTSTART:20180115T191500Z
-// DURATION:PT45M
-// END:VEVENT
-// BEGIN:VEVENT
-// UID:253cc897-fc26-4f25-9a01-b6bb57fa174d
-// SUMMARY:Dinner
-// DTSTAMP:20180210T093900Z
-// DTSTART:20180115T191500Z
-// DURATION:PT1H30M
-// END:VEVENT
-// END:VCALENDAR
-```
-
-4) Create iCalendar events with Audio (Mac):
+3) Create iCalendar events with Audio (Mac):
 ```javascript
 let ics = require("ics")
 let moment = require("moment")
@@ -159,7 +107,7 @@ let event = {
   startOutputType:"local",
   start: start,
   end: end,
-  title: "test here",
+  summary: "test here",
   alarms: alarms
 }
 events.push(event)
@@ -216,7 +164,7 @@ The following properties are accepted:
 | endInputType | Type of the date/time data in `end`:<br>`local`: passed data is in local time.<br>`utc`: passed data is UTC.<br>The default is the value of `startInputType` |
 | endOutputType | Format of the start date/time in the output:<br>`utc`: the start date will be sent in UTC format.<br>`local`: the start date will be sent as "floating" (form #1 in [RFC 5545](https://tools.ietf.org/html/rfc5545#section-3.3.5)).<br>The default is the value of `startOutputType` |
 | duration      | How long the event lasts. Object literal having form `{ weeks, days, hours, minutes, seconds }` *Either* `end` or `duration` is required, but *not* both. | `{ hours: 1, minutes: 45 }` (1 hour and 45 minutes)
-| title         | Title of event. | `'Code review'`
+| summary         | Title of event. | `'Code review'`
 | description   | Description of event. | `'A constructive roasting of those seeking to merge into master branch'`
 | location      | Intended venue | `Mountain Sun Pub and Brewery`
 | geo   | Geographic coordinates (lat/lon) | `{ lat: 38.9072, lon: 77.0369 }`
@@ -246,35 +194,6 @@ const eventAttributes = {
   /* rest of attributes */
 }
 ```
-
-#### `callback`
-
-Optional.
-Node-style callback.
-
-```javascript
-function (err, value) {
-  if (err) {
-    // if iCal generation fails, err is an object containing the reason
-    // if iCal generation succeeds, err is null
-  }
-
-  console.log(value) // iCal-compliant text string
-}
-```
-
-### `createEvents(events[, callback])`
-
-Generates an iCal-compliant VCALENDAR string with multiple VEVENTS.
-
-If a callback is not provided, returns an object having the form `{ error, value }`, where value is an iCal-compliant text string
-if `error` is `null`.
-
-If a callback is provided, returns a Node-style callback.
-
-#### `events`
-
-Array of `attributes` objects (as described in `createEvent`).
 
 #### `callback`
 

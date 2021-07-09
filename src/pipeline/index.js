@@ -1,9 +1,11 @@
-import buildEvent from './build'
-import formatEvent from './format'
-import validateEvent from './validate'
+import buildItem from './build'
+import { formatEvent, formatTodo } from './format'
+import { validateEvent, validateTodo } from './validate'
 
 export {
-  buildEvent,
+  buildItem,
   formatEvent,
-  validateEvent
+  formatTodo,
+  validateEvent,
+  validateTodo
 }
