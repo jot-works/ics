@@ -435,6 +435,39 @@ describe('.validateTodo', () => {
       expect(errors.some(p => p === 'organizer field has unspecified keys: foo')).to.be.true
     })
 
+    it('priority', () => {
+      expect(validateTodo({
+        summary: 'foo',
+        uid: 'foo',
+        start: [2018, 12, 1, 10, 30],
+        priority: 0
+      }).value.priority).to.equal(0)
+
+      const {errors} = validateTodo({
+        summary: 'foo',
+        uid: 'foo',
+        start: [2018, 12, 1, 10, 30],
+        priority: 10
+      }).error
+      expect(errors.some(p => p === 'priority must be less than or equal to 9')).to.be.true
+    })
+    it('percent', () => {
+      expect(validateTodo({
+        summary: 'foo',
+        uid: 'foo',
+        start: [2018, 12, 1, 10, 30],
+        percent: 50
+      }).value.percent).to.equal(50)
+
+      const {errors} = validateTodo({
+        summary: 'foo',
+        uid: 'foo',
+        start: [2018, 12, 1, 10, 30],
+        percent: 110
+      }).error
+      expect(errors.some(p => p === 'percent must be less than or equal to 100')).to.be.true
+    })
+
     it('attendees', () => {
       expect(validateTodo({
         summary: 'foo',

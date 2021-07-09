@@ -330,6 +330,16 @@ describe('pipeline.formatTodo', () => {
     expect(formattedTodo).to.contain('DTSTART:' + now)
     expect(formattedTodo).to.not.contain('DTSTART:' + now + 'Z')
   })
+  it('writes a priority', () => {
+    const todo = buildItem({ start: [2017, 5, 15, 10, 0], priority: 5 })
+    const formattedTodo = formatTodo(todo)
+    expect(formattedTodo).to.contain('PRIORITY:5')
+  })
+  it('writes a percent', () => {
+    const todo = buildItem({ start: [2017, 5, 15, 10, 0], percent: 50 })
+    const formattedTodo = formatTodo(todo)
+    expect(formattedTodo).to.contain('PERCENT-COMPLETE:50')
+  })
   it('writes a created timestamp', () => {
     const todo = buildItem({ created: [2017, 5, 15, 10, 0] })
     const formattedTodo = formatTodo(todo)
