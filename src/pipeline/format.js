@@ -145,7 +145,7 @@ export function formatTodo(attributes = {}) {
   icsFormat += `DTSTAMP:${timestamp}\r\n`
 
   // All day events like anniversaries must be specified as VALUE type DATE
-  icsFormat += `DTSTART${start && start.length == 3 ? ";VALUE=DATE" : ""}:${formatDate(start, startOutputType || startType, startInputType)}\r\n`
+  icsFormat += start ? (`DTSTART${start && start.length == 3 ? ";VALUE=DATE" : ""}:${formatDate(start, startOutputType || startType, startInputType)}\r\n`) : ''
 
   // Due is not required for all day events on single days (like anniversaries)
   if (!due || due.length !== 3 || start.length !== due.length || start.some((val, i) => val !== due[i])) {

@@ -258,7 +258,7 @@ describe('pipeline.formatTodo', () => {
     expect(formattedTodo).to.contain('SUMMARY:Untitled')
     expect(formattedTodo).to.contain('UID:')
     expect(formattedTodo).to.not.contain('SEQUENCE:')
-    expect(formattedTodo).to.contain('DTSTART:')
+    expect(formattedTodo).to.not.contain('DTSTART:')
     expect(formattedTodo).to.contain('DTSTAMP:20')
     expect(formattedTodo).to.contain('END:VTODO')
     expect(formattedTodo).to.contain('END:VCALENDAR')
