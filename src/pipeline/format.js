@@ -146,14 +146,7 @@ export function formatTodo(attributes = {}) {
 
   // All day events like anniversaries must be specified as VALUE type DATE
   icsFormat += start ? (`DTSTART${start && start.length == 3 ? ";VALUE=DATE" : ""}:${formatDate(start, startOutputType || startType, startInputType)}\r\n`) : ''
-
-  // Due is not required for all day events on single days (like anniversaries)
-  if (!due || due.length !== 3 || start.length !== due.length || start.some((val, i) => val !== due[i])) {
-    if (due) {
-      icsFormat += `DUE${due.length === 3 ? ";VALUE=DATE" : ""}:${formatDate(due, dueOutputType || startOutputType || startType, dueInputType || startInputType)}\r\n`;
-    }
-  }
-
+  icsFormat += due ? (`DUE${due.length === 3 ? ";VALUE=DATE" : ""}:${formatDate(due, dueOutputType || startOutputType || startType, dueInputType || startInputType)}\r\n`) : ''
   icsFormat += priority ? (`PRIORITY:${priority}\r\n`) : ''
   icsFormat += percent ? (`PERCENT-COMPLETE:${percent}\r\n`) : ''
   icsFormat += sequence ? (`SEQUENCE:${sequence}\r\n`) : ''

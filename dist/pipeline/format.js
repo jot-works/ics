@@ -137,16 +137,8 @@ function formatTodo() {
   icsFormat += (0, _utils.foldLine)("SUMMARY:".concat(summary ? (0, _utils.setSummary)(summary) : summary)) + '\r\n';
   icsFormat += "DTSTAMP:".concat(timestamp, "\r\n"); // All day events like anniversaries must be specified as VALUE type DATE
 
-  icsFormat += start ? "DTSTART".concat(start && start.length == 3 ? ";VALUE=DATE" : "", ":").concat((0, _utils.formatDate)(start, startOutputType || startType, startInputType), "\r\n") : ''; // Due is not required for all day events on single days (like anniversaries)
-
-  if (!due || due.length !== 3 || start.length !== due.length || start.some(function (val, i) {
-    return val !== due[i];
-  })) {
-    if (due) {
-      icsFormat += "DUE".concat(due.length === 3 ? ";VALUE=DATE" : "", ":").concat((0, _utils.formatDate)(due, dueOutputType || startOutputType || startType, dueInputType || startInputType), "\r\n");
-    }
-  }
-
+  icsFormat += start ? "DTSTART".concat(start && start.length == 3 ? ";VALUE=DATE" : "", ":").concat((0, _utils.formatDate)(start, startOutputType || startType, startInputType), "\r\n") : '';
+  icsFormat += due ? "DUE".concat(due.length === 3 ? ";VALUE=DATE" : "", ":").concat((0, _utils.formatDate)(due, dueOutputType || startOutputType || startType, dueInputType || startInputType), "\r\n") : '';
   icsFormat += priority ? "PRIORITY:".concat(priority, "\r\n") : '';
   icsFormat += percent ? "PERCENT-COMPLETE:".concat(percent, "\r\n") : '';
   icsFormat += sequence ? "SEQUENCE:".concat(sequence, "\r\n") : '';
