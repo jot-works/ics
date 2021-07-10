@@ -120,7 +120,7 @@ var todoSchema = yup.object().shape({
   method: yup.string(),
   uid: yup.string().required(),
   sequence: yup.number(),
-  start: dateTimeSchema.required(),
+  start: dateTimeSchema,
   duration: durationSchema,
   startType: yup.string().matches(/utc|local/),
   startInputType: yup.string().matches(/utc|local/),
