@@ -1,5 +1,6 @@
 import {
-  buildItem,
+  buildEvent,
+  buildTodo,
   formatEvent,
   formatTodo,
   validateEvent,
@@ -13,10 +14,10 @@ function assignUniqueId(item) {
   return item
 }
 function validateAndBuildEvent(event) {
-  return validateEvent(buildItem(event))
+  return validateEvent(buildEvent(event))
 }
 function validateAndBuildTodo(todo) {
-  return validateTodo(buildItem(todo))
+  return validateTodo(buildTodo(todo))
 }
 
 export function createEvent(attributes, cb) {

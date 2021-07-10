@@ -18,11 +18,11 @@ function assignUniqueId(item) {
 }
 
 function validateAndBuildEvent(event) {
-  return (0, _pipeline.validateEvent)((0, _pipeline.buildItem)(event));
+  return (0, _pipeline.validateEvent)((0, _pipeline.buildEvent)(event));
 }
 
 function validateAndBuildTodo(todo) {
-  return (0, _pipeline.validateTodo)((0, _pipeline.buildItem)(todo));
+  return (0, _pipeline.validateTodo)((0, _pipeline.buildTodo)(todo));
 }
 
 function createEvent(attributes, cb) {
