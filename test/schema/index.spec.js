@@ -266,7 +266,7 @@ describe('.validateTodo', () => {
 
     it('start', () => {
       const {error} = validateTodo({summary: 'foo', uid: 'foo'})
-      expect(error.errors.some(p => p === 'start is a required field')).to.be.true
+      expect(error).to.be.null
     })
   })
 

@@ -93,7 +93,7 @@ export type EventAttributes = {
 } & ({ end: DateArray } | { duration: DurationObject });
 
 export type TodoAttributes = {
-  start: DateArray;
+  start?: DateArray;
   startInputType?: 'local' | 'utc';
   startOutputType?: 'local' | 'utc';
 
