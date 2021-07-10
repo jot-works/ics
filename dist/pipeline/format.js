@@ -137,7 +137,7 @@ function formatTodo() {
   icsFormat += (0, _utils.foldLine)("SUMMARY:".concat(summary ? (0, _utils.setSummary)(summary) : summary)) + '\r\n';
   icsFormat += "DTSTAMP:".concat(timestamp, "\r\n"); // All day events like anniversaries must be specified as VALUE type DATE
 
-  icsFormat += "DTSTART".concat(start && start.length == 3 ? ";VALUE=DATE" : "", ":").concat((0, _utils.formatDate)(start, startOutputType || startType, startInputType), "\r\n"); // Due is not required for all day events on single days (like anniversaries)
+  icsFormat += start ? "DTSTART".concat(start && start.length == 3 ? ";VALUE=DATE" : "", ":").concat((0, _utils.formatDate)(start, startOutputType || startType, startInputType), "\r\n") : ''; // Due is not required for all day events on single days (like anniversaries)
 
   if (!due || due.length !== 3 || start.length !== due.length || start.some(function (val, i) {
     return val !== due[i];
